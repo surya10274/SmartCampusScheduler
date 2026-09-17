@@ -1,0 +1,44 @@
+digraph Workflow {
+    rankdir=TB;
+    fontname="Helvetica";
+    node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, fillcolor="#aed6f1"];
+    edge [fontname="Helvetica", fontsize=10];
+
+    Start [shape=ellipse, fillcolor="#a9dfbf", label="Start"];
+    Login [label="User selects role\n(Student/Faculty/Admin)"];
+    Menu [label="Main Menu displayed"];
+    ChooseAction [shape=diamond, fillcolor="#f9e79f", label="Choose action"];
+
+    AddResource [label="Add / Update / Search\nResources"];
+    ScheduleEvent [label="Enter event details:\ntitle, resource, time window,\nexpected attendance"];
+    ValidateInput [shape=diamond, fillcolor="#f9e79f", label="Input valid?"];
+    ShowValidationError [shape=box, fillcolor="#f5b7b1", label="Show validation error"];
+    CheckCapacity [shape=diamond, fillcolor="#f9e79f", label="Within resource\ncapacity?"];
+    CheckConflict [shape=diamond, fillcolor="#f9e79f", label="Overlaps existing\nevent/booking on\nsame resource?"];
+    ShowConflictError [shape=box, fillcolor="#f5b7b1", label="Reject: show conflicting\nevent ID and time"];
+    PersistEvent [label="Save event to events.txt\nLog the operation"];
+    Confirm [shape=box, fillcolor="#a9dfbf", label="Show confirmation\nwith generated Event ID"];
+
+    ViewReports [label="Generate utilisation /\nbusiest-resource report"];
+    End [shape=ellipse, fillcolor="#a9dfbf", label="Return to Menu / Exit"];
+
+    Start -> Login -> Menu -> ChooseAction;
+    ChooseAction -> AddResource [label="Resource Mgmt"];
+    ChooseAction -> ScheduleEvent [label="Schedule Event"];
+    ChooseAction -> ViewReports [label="Reports"];
+
+    AddResource -> End;
+    ViewReports -> End;
+
+    ScheduleEvent -> ValidateInput;
+    ValidateInput -> ShowValidationError [label="No"];
+    ShowValidationError -> Menu;
+    ValidateInput -> CheckCapacity [label="Yes"];
+    CheckCapacity -> ShowValidationError [label="Exceeds capacity"];
+    CheckCapacity -> CheckConflict [label="OK"];
+    CheckConflict -> ShowConflictError [label="Yes"];
+    ShowConflictError -> Menu;
+    CheckConflict -> PersistEvent [label="No"];
+    PersistEvent -> Confirm -> End;
+    End -> Menu [label="continue"];
+}

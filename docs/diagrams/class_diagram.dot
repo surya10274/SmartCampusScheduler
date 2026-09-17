@@ -1,0 +1,53 @@
+digraph ClassDiagram {
+    rankdir=TB;
+    fontname="Helvetica";
+    node [shape=record, fontname="Helvetica", fontsize=10, style=filled, fillcolor="#f4f6f6"];
+    edge [fontname="Helvetica", fontsize=9];
+
+    Resource [label="{Resource|+ resourceId: String\l+ name: String\l+ type: ResourceType\l+ capacity: int\l+ location: String\l+ status: ResourceStatus\l|+ toRecord(): String\l+ fromRecord(String): Resource\l}"];
+
+    User [label="{User|+ userId: String\l+ name: String\l+ email: String\l+ role: Role\l|+ toRecord(): String\l+ fromRecord(String): User\l}"];
+
+    Event [label="{Event|+ eventId: String\l+ title: String\l+ organizerId: String\l+ resourceId: String\l+ startTime: LocalDateTime\l+ endTime: LocalDateTime\l+ expectedAttendance: int\l+ status: EventStatus\l|+ overlapsWith(Event): boolean\l+ toRecord(): String\l}"];
+
+    Booking [label="{Booking|+ bookingId: String\l+ resourceId: String\l+ userId: String\l+ startTime: LocalDateTime\l+ endTime: LocalDateTime\l+ purpose: String\l+ status: BookingStatus\l|+ overlapsWith(Booking): boolean\l+ toRecord(): String\l}"];
+
+    ResourceService [label="{ResourceService|- resources: List\<Resource\>\l|+ addResource(...): Resource\l+ updateResource(...): Resource\l+ deleteResource(id)\l+ findAvailableByType(...)\l}"];
+
+    UserService [label="{UserService|- users: List\<User\>\l|+ registerUser(...): User\l+ getById(id): User\l+ deleteUser(id)\l}"];
+
+    EventSchedulerService [label="{EventSchedulerService|- events: List\<Event\>\l- resourceService: ResourceService\l|+ scheduleEvent(...): Event\l+ rescheduleEvent(...): Event\l+ cancelEvent(id)\l- checkConflict(Event, id)\l}"];
+
+    BookingService [label="{BookingService|- bookings: List\<Booking\>\l- resourceService: ResourceService\l- eventSchedulerService: EventSchedulerService\l|+ createBooking(...): Booking\l+ cancelBooking(id)\l}"];
+
+    ReportService [label="{ReportService|- resourceService: ResourceService\l- eventSchedulerService: EventSchedulerService\l|+ getUtilizationHoursByResource()\l+ getBusiestResources(n)\l+ getEventLoadByOrganizer()\l}"];
+
+    Validator [label="{Validator (utility)|+ requireNonBlank(...)\l+ requirePositive(...)\l+ requireValidEmail(...)\l+ requireValidTimeWindow(...)\l}"];
+
+    FileStorageUtil [label="{FileStorageUtil (utility)|+ loadAll(file, parser): List\<T\>\l+ saveAll(file, items, serializer)\l}"];
+
+    ResourceService -> Resource [arrowhead=diamond, label="manages"];
+    UserService -> User [arrowhead=diamond, label="manages"];
+    EventSchedulerService -> Event [arrowhead=diamond, label="manages"];
+    BookingService -> Booking [arrowhead=diamond, label="manages"];
+
+    EventSchedulerService -> ResourceService [arrowhead=vee, style=dashed, label="uses"];
+    BookingService -> ResourceService [arrowhead=vee, style=dashed, label="uses"];
+    BookingService -> EventSchedulerService [arrowhead=vee, style=dashed, label="uses"];
+    ReportService -> ResourceService [arrowhead=vee, style=dashed, label="uses"];
+    ReportService -> EventSchedulerService [arrowhead=vee, style=dashed, label="uses"];
+
+    ResourceService -> Validator [arrowhead=vee, style=dotted];
+    EventSchedulerService -> Validator [arrowhead=vee, style=dotted];
+    BookingService -> Validator [arrowhead=vee, style=dotted];
+
+    ResourceService -> FileStorageUtil [arrowhead=vee, style=dotted];
+    EventSchedulerService -> FileStorageUtil [arrowhead=vee, style=dotted];
+    BookingService -> FileStorageUtil [arrowhead=vee, style=dotted];
+    UserService -> FileStorageUtil [arrowhead=vee, style=dotted];
+
+    Event -> Resource [arrowhead=vee, label="resourceId (ref)"];
+    Event -> User [arrowhead=vee, label="organizerId (ref)"];
+    Booking -> Resource [arrowhead=vee, label="resourceId (ref)"];
+    Booking -> User [arrowhead=vee, label="userId (ref)"];
+}

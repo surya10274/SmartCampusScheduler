@@ -1,0 +1,46 @@
+digraph UseCase {
+    rankdir=LR;
+    fontname="Helvetica";
+    node [fontname="Helvetica", fontsize=11];
+
+    Student [shape=box, style="filled", fillcolor="#d6eaf8", label="Student"];
+    Faculty [shape=box, style="filled", fillcolor="#d6eaf8", label="Faculty"];
+    Admin [shape=box, style="filled", fillcolor="#d6eaf8", label="Campus Admin"];
+
+    subgraph cluster_system {
+        label="Smart Campus Resource and Event Scheduler";
+        style=dashed; fontsize=13;
+
+        UC1 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="Register / Manage\nUsers"];
+        UC2 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="Add / Update /\nDeactivate Resource"];
+        UC3 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="Search Available\nResources"];
+        UC4 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="Schedule Event"];
+        UC5 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="Reschedule / Cancel\nEvent"];
+        UC6 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="Create / Cancel\nDirect Booking"];
+        UC7 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="View Upcoming\nEvents"];
+        UC8 [shape=ellipse, style=filled, fillcolor="#fcf3cf", label="View Utilisation &\nAnalytics Reports"];
+        UC9 [shape=ellipse, style=filled, fillcolor="#f5b7b1", label="<<include>>\nDetect Scheduling\nConflict"];
+    }
+
+    Student -> UC3;
+    Student -> UC6;
+    Student -> UC7;
+
+    Faculty -> UC3;
+    Faculty -> UC4;
+    Faculty -> UC5;
+    Faculty -> UC6;
+    Faculty -> UC7;
+
+    Admin -> UC1;
+    Admin -> UC2;
+    Admin -> UC3;
+    Admin -> UC4;
+    Admin -> UC5;
+    Admin -> UC7;
+    Admin -> UC8;
+
+    UC4 -> UC9 [style=dashed, arrowhead=vee, label="<<include>>"];
+    UC5 -> UC9 [style=dashed, arrowhead=vee, label="<<include>>"];
+    UC6 -> UC9 [style=dashed, arrowhead=vee, label="<<include>>"];
+}

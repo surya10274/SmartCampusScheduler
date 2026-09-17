@@ -1,0 +1,15 @@
+digraph ER {
+    rankdir=LR;
+    fontname="Helvetica";
+    node [fontname="Helvetica", fontsize=10];
+
+    RESOURCE [shape=record, style=filled, fillcolor="#fbd9a5", label="{RESOURCE|resource_id (PK)\lname\ltype\lcapacity\llocation\lstatus\l}"];
+    USERS [shape=record, style=filled, fillcolor="#a9cce3", label="{USER|user_id (PK)\lname\lemail\lrole\l}"];
+    EVENT [shape=record, style=filled, fillcolor="#a3e4c1", label="{EVENT|event_id (PK)\ltitle\lorganizer_id (FK: USER)\lresource_id (FK: RESOURCE)\lstart_time\lend_time\lexpected_attendance\lstatus\l}"];
+    BOOKING [shape=record, style=filled, fillcolor="#f5b7b1", label="{BOOKING|booking_id (PK)\lresource_id (FK: RESOURCE)\luser_id (FK: USER)\lstart_time\lend_time\lpurpose\lstatus\l}"];
+
+    USERS -> EVENT [label="organizes\n1..*"];
+    RESOURCE -> EVENT [label="hosts\n1..*"];
+    USERS -> BOOKING [label="makes\n1..*"];
+    RESOURCE -> BOOKING [label="reserved via\n1..*"];
+}

@@ -1,0 +1,28 @@
+digraph Sequence {
+    rankdir=LR;
+    fontname="Helvetica";
+    node [shape=plaintext, fontname="Helvetica", fontsize=11];
+    graph [splines=false];
+
+    subgraph cluster_lifelines {
+        style=invis;
+        User1 [label="User\n(console input)"];
+        MainC [label="Main"];
+        ESS [label="EventSchedulerService"];
+        RS [label="ResourceService"];
+        FSU [label="FileStorageUtil"];
+        Log [label="Logger"];
+    }
+
+    User1 -> MainC [label="1: choose 'Schedule Event',\nenter title/resource/time/attendance"];
+    MainC -> ESS [label="2: scheduleEvent(title, organizerId,\nresourceId, start, end, attendance)"];
+    ESS -> ESS [label="3: Validator.requireValidTimeWindow(...)\nValidator.requirePositive(attendance)"];
+    ESS -> RS [label="4: getById(resourceId)"];
+    RS -> ESS [label="5: return Resource"];
+    ESS -> ESS [label="6: check attendance <= resource.capacity"];
+    ESS -> ESS [label="7: checkConflict(candidate)\n(scan active events on resource)"];
+    ESS -> FSU [label="8: saveAll(events.txt, events, ...)"];
+    ESS -> Log [label="9: info('Scheduled event ...')"];
+    ESS -> MainC [label="10: return new Event"];
+    MainC -> User1 [label="11: print confirmation with Event ID"];
+}

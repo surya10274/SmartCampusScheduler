@@ -1,0 +1,86 @@
+digraph Architecture {
+    rankdir=TB;
+    fontname="Helvetica";
+    node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12, margin=0.2];
+    edge [fontname="Helvetica", fontsize=10];
+
+    subgraph cluster_presentation {
+        label="Presentation Layer";
+        style=filled; color="#dbe9f7"; fontsize=14;
+        Main [label="Main.java\n(Console Menu / CLI)", fillcolor="#a9cce3"];
+    }
+
+    subgraph cluster_service {
+        label="Service Layer (Business Logic)";
+        style=filled; color="#e8f6ef"; fontsize=14;
+        ResourceService [label="ResourceService", fillcolor="#a3e4c1"];
+        UserService [label="UserService", fillcolor="#a3e4c1"];
+        EventSchedulerService [label="EventSchedulerService\n(conflict detection)", fillcolor="#82c99a"];
+        BookingService [label="BookingService", fillcolor="#a3e4c1"];
+        ReportService [label="ReportService", fillcolor="#a3e4c1"];
+    }
+
+    subgraph cluster_model {
+        label="Domain Model";
+        style=filled; color="#fdf2e3"; fontsize=14;
+        Resource [label="Resource", fillcolor="#fbd9a5"];
+        User [label="User", fillcolor="#fbd9a5"];
+        Event [label="Event", fillcolor="#fbd9a5"];
+        Booking [label="Booking", fillcolor="#fbd9a5"];
+    }
+
+    subgraph cluster_util {
+        label="Utility / Cross-cutting";
+        style=filled; color="#f3e5f5"; fontsize=14;
+        Validator [label="Validator", fillcolor="#d7bde2"];
+        IdGenerator [label="IdGenerator", fillcolor="#d7bde2"];
+        Logger [label="Logger", fillcolor="#d7bde2"];
+        FileStorageUtil [label="FileStorageUtil", fillcolor="#d7bde2"];
+    }
+
+    subgraph cluster_storage {
+        label="Persistence Layer";
+        style=filled; color="#fdeaea"; fontsize=14;
+        DataFiles [label="Flat Files\ndata/*.txt", shape=cylinder, fillcolor="#f5b7b1"];
+        LogFile [label="logs/app.log", shape=cylinder, fillcolor="#f5b7b1"];
+    }
+
+    Main -> ResourceService;
+    Main -> UserService;
+    Main -> EventSchedulerService;
+    Main -> BookingService;
+    Main -> ReportService;
+
+    ResourceService -> Resource;
+    UserService -> User;
+    EventSchedulerService -> Event;
+    EventSchedulerService -> ResourceService [label="checks status/capacity"];
+    BookingService -> Booking;
+    BookingService -> ResourceService;
+    BookingService -> EventSchedulerService [label="checks event overlap"];
+    ReportService -> ResourceService;
+    ReportService -> EventSchedulerService;
+
+    ResourceService -> Validator;
+    UserService -> Validator;
+    EventSchedulerService -> Validator;
+    BookingService -> Validator;
+
+    ResourceService -> IdGenerator;
+    UserService -> IdGenerator;
+    EventSchedulerService -> IdGenerator;
+    BookingService -> IdGenerator;
+
+    ResourceService -> FileStorageUtil;
+    UserService -> FileStorageUtil;
+    EventSchedulerService -> FileStorageUtil;
+    BookingService -> FileStorageUtil;
+
+    FileStorageUtil -> DataFiles;
+    Logger -> LogFile;
+
+    ResourceService -> Logger;
+    EventSchedulerService -> Logger;
+    BookingService -> Logger;
+    UserService -> Logger;
+}

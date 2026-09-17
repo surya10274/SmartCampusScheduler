@@ -1,0 +1,18 @@
+# Compiled output
+bin/
+out/
+*.class
+
+# Runtime-generated data & logs (auto-created on first run)
+data/
+logs/
+
+# Temp source-list files used for compilation
+sources.txt
+all_sources.txt
+
+# OS / IDE
+.DS_Store
+.idea/
+*.iml
+.vscode/
